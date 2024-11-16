@@ -6,13 +6,16 @@
     <title>Trishul AI Chatbot</title>
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-darker: #070c16;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --bg-gradient: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
             --chat-bg: #1e293b;
-            --text-light: #f1f5f9;
+            --text-light: #f8fafc;
             --text-gray: #94a3b8;
             --border-color: #334155;
+            --ai-message-bg: #1e293b;
+            --user-message-bg: #4f46e5;
+            --input-bg: #1e293b;
+            --shadow-color: rgba(0, 0, 0, 0.25);
         }
 
         * {
@@ -22,18 +25,20 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-dark);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            line-height: 1.6;
         }
 
         .header {
-            background-color: var(--bg-darker);
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: fixed;
             top: 0;
             left: 0;
@@ -42,42 +47,121 @@
         }
 
         .header h1 {
-            max-width: 768px;
+            max-width: 868px;
             margin: 0 auto;
-            font-size: 1.5rem;
-            color: var(--primary-color);
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
         }
 
         .chat-container {
             flex: 1;
-            max-width: 768px;
+            max-width: 868px;
             margin: 0 auto;
             width: 100%;
-            padding: 5rem 1rem 6rem;
+            padding: 6rem 1.5rem 7rem;
             height: 100vh;
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
 
         .message {
-            max-width: 85%;
-            padding: 1rem;
-            border-radius: 1rem;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: messageAppear 0.3s ease forwards;
+        }
+
+        @keyframes messageAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message-content-wrapper {
+            max-width: 70%;
+        }
+
+        .message-content {
+            padding: 1rem 1.25rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            position: relative;
         }
 
         .message.user {
-            background-color: var(--primary-color);
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 0.25rem;
+            flex-direction: row-reverse;
         }
 
-        .message.bot {
-            background-color: var(--chat-bg);
-            border: 1px solid var(--border-color);
-            border-bottom-left-radius: 0.25rem;
+        .message.user .message-content-wrapper {
+            margin-left: auto;
+        }
+
+        .message.user .message-content {
+            background: var(--user-message-bg);
+            border-bottom-right-radius: 0.5rem;
+            color: white;
+        }
+
+        .message.bot .message-content {
+            background: var(--ai-message-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom-left-radius: 0.5rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.75rem;
+            margin: 0.75rem 0;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-block pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .copy-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .input-container {
@@ -85,51 +169,61 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: var(--bg-darker);
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .input-wrapper {
-            max-width: 768px;
+            max-width: 868px;
             margin: 0 auto;
             display: flex;
-            gap: 0.75rem;
+            gap: 1rem;
+            position: relative;
         }
 
         #user-input {
             flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            background-color: var(--chat-bg);
+            padding: 1rem 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            background: var(--input-bg);
             color: var(--text-light);
             font-size: 1rem;
             resize: none;
-            min-height: 40px;
+            min-height: 48px;
+            max-height: 150px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px var(--shadow-color);
         }
 
         #user-input:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
         .send-button {
-            padding: 0.75rem 1.5rem;
-            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            background: var(--primary-gradient);
             color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 1rem;
             cursor: pointer;
             font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px var(--shadow-color);
         }
 
-        .send-button:hover {
-            opacity: 0.9;
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .send-button:disabled {
-            opacity: 0.5;
+            opacity: 0.7;
             cursor: not-allowed;
         }
 
@@ -137,6 +231,7 @@
             padding: 1rem;
             color: var(--text-gray);
             display: none;
+            margin-left: 3.5rem;
         }
 
         .typing.active {
@@ -148,19 +243,14 @@
         .typing-dot {
             width: 8px;
             height: 8px;
-            background-color: var(--text-gray);
+            background: var(--text-gray);
             border-radius: 50%;
             animation: typing 1.4s infinite;
             opacity: 0.4;
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes typing {
             0%, 100% {
@@ -173,22 +263,33 @@
             }
         }
 
-        @media (max-width: 640px) {
+        .error-message {
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
             .chat-container {
-                padding: 4.5rem 0.75rem 5.5rem;
+                padding: 5rem 1rem 6.5rem;
             }
 
-            .message {
-                max-width: 90%;
-                padding: 0.875rem;
+            .message-content-wrapper {
+                max-width: 85%;
             }
 
             .header {
-                padding: 0.75rem;
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
             }
 
             .input-container {
-                padding: 0.75rem;
+                padding: 1rem;
+            }
+
+            .send-button {
+                padding: 1rem 1.5rem;
             }
         }
     </style>
@@ -200,7 +301,12 @@
 
     <div class="chat-container" id="chat-container">
         <div class="message bot">
-            Hello! I'm Trishul AI. How can I assist you today?
+            <div class="avatar">AI</div>
+            <div class="message-content-wrapper">
+                <div class="message-content">
+                    Hello! I'm Trishul AI. How can I assist you today?
+                </div>
+            </div>
         </div>
     </div>
 
@@ -217,131 +323,257 @@
                 placeholder="Type your message here..."
                 rows="1"
             ></textarea>
-            <button class="send-button" onclick="sendMessage()">Send</button>
+            <button class="send-button" id="send-button">Send</button>
         </div>
     </div>
 
     <script>
-        const GEMINI_API_KEY = "AIzaSyCdoxyWjwCnQ5lEfpbXUeJP0CapL76yFyM";  // Your API key
+        const GEMINI_API_KEY = "AIzaSyCdoxyWjwCnQ5lEfpbXUeJP0CapL76yFyM";
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-        
+
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
-        const sendButton = document.querySelector('.send-button');
+        const sendButton = document.getElementById('send-button');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        function replaceAIReferences(text) {
-            const replacements = {
-                'trained by Google': 'trained by Shashwat',
-                'Google AI': 'Shashwat AI',
-                'Google Assistant': 'Shashwat Assistant',
-                'Google\'s AI': 'Shashwat\'s AI',
-                'developed by Google': 'developed by Shashwat',
-                'ChatGPT': 'Trishul AI',
-                'OpenAI': 'Shashwat Technologies',
-                'Gemini': 'Trishul AI'
-            };
+        const AI_REPLACEMENTS = {
+            'trained by Google': 'trained by Shashwat',
+            'Google AI': 'Shashwat AI',
+            'Google Assistant': 'Shashwat Assistant',
+            'Google\'s AI': 'Shashwat\'s AI',
+            'developed by Google': 'developed by Shashwat',
+            'ChatGPT': 'Trishul AI',
+            'OpenAI': 'Shashwat Technologies',
+            'Gemini': 'Trishul AI'
+        };
 
-            let modifiedText = text;
-            for (const [search, replace] of Object.entries(replacements)) {
+        function replaceAIReferences(text) {
+            return Object.entries(AI_REPLACEMENTS).reduce((result, [search, replace]) => {
                 const regex = new RegExp(search, 'gi');
-                modifiedText = modifiedText.replace(regex, replace);
-            }
-            return modifiedText;
+                return result.replace(regex, replace);
+            }, text);
         }
 
-        userInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
-
-        userInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        function addMessage(text, isUser = false) {
+        function createMessageElement(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            messageDiv.textContent = text;
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function addErrorMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message bot error-message';
-            messageDiv.textContent = text;
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        async function getGeminiResponse(prompt) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt
-                            }]
-                        }]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('API Error:', errorData);
-                    throw new Error(errorData.error?.message || 'API request failed');
-                }
-
-                const data = await response.json();
-                console.log('API Response:', data);  // Debug log
-                
-                if (!data.candidates || data.candidates.length === 0) {
-                    throw new Error('No response generated');
-                }
-
-                return data.candidates[0].content.parts[0].text;
-            } catch (error) {
-                console.error('Error calling Gemini API:', error);
-                throw error;
-            }
-        }
-
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message) return;
-
-            userInput.disabled = true;
-            sendButton.disabled = true;
-            addMessage(message, true);
             
-            userInput.value = '';
-            userInput.style.height = 'auto';
-            typingIndicator.classList.add('active');
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = isUser ? 'You' : 'AI';
+            
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'message-content-wrapper';
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentWrapper);
+            
+            return messageDiv;
+        }
 
-            try {
-                const response = await getGeminiResponse(message);
-                const modifiedResponse = replaceAIReferences(response);
-                addMessage(modifiedResponse);
-            } catch (error) {
-                addErrorMessage("I apologize, but I encountered an error. Please try again later.");
-                console.error('Error details:', error);
-            } finally {
+        function createTextParagraph(text) {
+            const div = document.createElement('div');
+            div.className = 'message-content';
+            div.textContent = text;
+            return div;
+        }
+
+        function createCodeBlock(code) {
+            const container = document.createElement('div');
+            container.className = 'code-block';
+            
+            const pre = document.createElement('pre');
+            pre.textContent = code.trim();
+            
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.textContent = 'Copy';
+            copyButton.onclick = () => {
+                navigator.clipboard.writeText(code.trim())
+                    .then(() => {
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => copyButton.textContent = 'Copy', 2000);
+                    })
+                    .catch(err => console.error('Failed to copy:', err));
+            };
+            
+            container.appendChild(pre);
+            container.appendChild(copyButton);
+            return container;
+        }
+
+        function processMessageContent(text) {
+            const segments = [];
+            let currentIndex = 0;
+            let currentText = '';
+
+            while (currentIndex < text.length) {
+                const codeStart = text.indexOf('```', currentIndex);
+                
+                if (codeStart === -1) {
+                    currentText += text.slice(currentIndex);
+                    if (currentText) segments.push({ type: 'text', content: currentText });
+                    break;
+                }
+
+                const textBeforeCode = text.slice(currentIndex, codeStart);
+                if (textBeforeCode) currentText += textBeforeCode;
+
+                const codeEnd = text.indexOf('```', codeStart + 3);
+                if (codeEnd === -1) {
+                    currentText += text.slice(currentIndex);
+                    if (currentText) segments.push({ type: 'text', content: currentText });
+                    break;
+                }
+
+                if (currentText) {
+                    segments.push({ type: 'text', content: currentText });
+                    currentText = '';
+                }
+
+                const code = text.slice(codeStart + 3, codeEnd).trim();
+                segments.push({ type: 'code', content: code });
+
+                currentIndex = codeEnd + 3;
+            }
+
+            return segments;
+        }
+
+        async function typeContent(element, segments, segmentIndex = 0, charIndex = 0) {
+            if (segmentIndex >= segments.length) {
                 typingIndicator.classList.remove('active');
                 userInput.disabled = false;
                 sendButton.disabled = false;
                 userInput.focus();
+                return;
             }
-        }
 
-        userInput.focus();
-    </script>
+            const segment = segments[segmentIndex];
+
+            if (segment.type === 'code') {
+                const codeBlock = createCodeBlock(segment.content);
+                element.appendChild(codeBlock);
+                setTimeout(() => typeContent(element, segments, segmentIndex + 1, 0), 30);
+                return;}
+
+if (charIndex === 0) {
+    const messageContent = createTextParagraph('');
+    element.appendChild(messageContent);
+}
+
+const currentDiv = element.lastElementChild;
+if (charIndex < segment.content.length) {
+    currentDiv.textContent += segment.content[charIndex];
+    setTimeout(() => typeContent(element, segments, segmentIndex, charIndex + 1), 30);
+} else {
+    setTimeout(() => typeContent(element, segments, segmentIndex + 1, 0), 30);
+}
+}
+
+function addMessage(text, isUser = false) {
+const messageDiv = createMessageElement(text, isUser);
+const contentWrapper = messageDiv.querySelector('.message-content-wrapper');
+
+if (isUser) {
+    contentWrapper.appendChild(createTextParagraph(text));
+} else {
+    const segments = processMessageContent(text);
+    typeContent(contentWrapper, segments);
+}
+
+chatContainer.appendChild(messageDiv);
+chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function addErrorMessage(text) {
+const messageDiv = createMessageElement(text, false);
+messageDiv.classList.add('error-message');
+const contentWrapper = messageDiv.querySelector('.message-content-wrapper');
+contentWrapper.appendChild(createTextParagraph(text));
+chatContainer.appendChild(messageDiv);
+chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+async function getGeminiResponse(prompt) {
+try {
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            contents: [{
+                parts: [{
+                    text: prompt
+                }]
+            }]
+        })
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        throw new Error(errorData.error?.message || 'API request failed');
+    }
+
+    const data = await response.json();
+    
+    if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error('No response generated');
+    }
+
+    return data.candidates[0].content.parts[0].text;
+} catch (error) {
+    console.error('Error calling Gemini API:', error);
+    throw error;
+}
+}
+
+async function sendMessage() {
+const message = userInput.value.trim();
+if (!message) return;
+
+userInput.disabled = true;
+sendButton.disabled = true;
+addMessage(message, true);
+
+userInput.value = '';
+userInput.style.height = 'auto';
+typingIndicator.classList.add('active');
+
+try {
+    const response = await getGeminiResponse(message);
+    const modifiedResponse = replaceAIReferences(response);
+    addMessage(modifiedResponse);
+} catch (error) {
+    addErrorMessage("I apologize, but I encountered an error. Please try again later.");
+    console.error('Error details:', error);
+    typingIndicator.classList.remove('active');
+    userInput.disabled = false;
+    sendButton.disabled = false;
+}
+}
+
+// Auto-resize textarea
+userInput.addEventListener('input', function() {
+this.style.height = 'auto';
+this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+});
+
+// Handle Enter key
+userInput.addEventListener('keydown', function(e) {
+if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+}
+});
+
+// Handle send button click
+sendButton.addEventListener('click', sendMessage);
+
+// Initial focus
+userInput.focus();
+</script>
 </body>
 </html>
