@@ -5,19 +5,60 @@
      crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trishul AI T-Tech</title>
+    <title>Trishul AI T-Tech // Cyberpunk Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter/3.19.3/inter.css" rel="stylesheet">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            --bg-gradient: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
-            --chat-bg: #1e293b;
-            --text-light: #f8fafc;
-            --text-gray: #94a3b8;
-            --border-color: #334155;
-            --ai-message-bg: #1e293b;
-            --user-message-bg: #4f46e5;
-            --input-bg: #1e293b;
-            --shadow-color: rgba(0, 0, 0, 0.25);
+            --primary-neon: #00ff9d;
+            --secondary-neon: #ff00ff;
+            --bg-dark: #0a0a0f;
+            --bg-darker: #050507;
+            --chat-bg: #12121a;
+            --text-light: #e0e0ff;
+            --text-gray: #8888a0;
+            --border-neon: #00ff9d33;
+            --ai-message-bg: #12121a;
+            --user-message-bg: #1a1a2e;
+            --input-bg: #0c0c14;
+            --shadow-neon: 0 0 20px #00ff9d22;
+            --glow-animation: glow 1.5s ease infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px var(--primary-neon),
+                           0 0 10px var(--primary-neon),
+                           0 0 15px var(--primary-neon);
+            }
+            to {
+                box-shadow: 0 0 10px var(--primary-neon),
+                           0 0 20px var(--primary-neon),
+                           0 0 30px var(--primary-neon);
+            }
+        }
+
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        @keyframes textGlitch {
+            0% {
+                text-shadow: 2px 0 var(--primary-neon), -2px 0 var(--secondary-neon);
+            }
+            25% {
+                text-shadow: -2px 0 var(--primary-neon), 2px 0 var(--secondary-neon);
+            }
+            50% {
+                text-shadow: 2px 0 var(--secondary-neon), -2px 0 var(--primary-neon);
+            }
+            100% {
+                text-shadow: -2px 0 var(--secondary-neon), 2px 0 var(--primary-neon);
+            }
         }
 
         * {
@@ -27,20 +68,39 @@
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg-gradient);
+            font-family: 'Inter', monospace;
+            background: var(--bg-dark);
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0%,
+                rgba(0, 255, 157, 0.03) 50%,
+                transparent 100%
+            );
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
         }
 
         .header {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
             padding: 1.25rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-neon);
             position: fixed;
             top: 0;
             left: 0;
@@ -51,12 +111,13 @@
         .header h1 {
             max-width: 868px;
             margin: 0 auto;
-            font-size: 1.75rem;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            font-weight: 800;
             text-align: center;
+            color: var(--primary-neon);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: textGlitch 3s infinite alternate;
         }
 
         .chat-container {
@@ -89,13 +150,18 @@
         .avatar {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
+            border-radius: 4px;
+            background: var(--chat-bg);
+            border: 1px solid var(--primary-neon);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             flex-shrink: 0;
+            box-shadow: var(--shadow-neon);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
         .message-content-wrapper {
@@ -104,9 +170,9 @@
 
         .message-content {
             padding: 1rem 1.25rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 6px var(--shadow-color);
+            border-radius: 4px;
             position: relative;
+            border: 1px solid var(--border-neon);
         }
 
         .message.user {
@@ -119,31 +185,28 @@
 
         .message.user .message-content {
             background: var(--user-message-bg);
-            border-bottom-right-radius: 0.5rem;
-            color: white;
+            border-color: var(--secondary-neon);
         }
 
         .message.bot .message-content {
             background: var(--ai-message-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom-left-radius: 0.5rem;
         }
 
         .code-block {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 0.75rem;
+            background: var(--bg-darker);
+            border-radius: 4px;
             margin: 0.75rem 0;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-neon);
         }
 
         .code-block pre {
             padding: 1.25rem;
             overflow-x: auto;
             margin: 0;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            color: #e2e8f0;
+            color: var(--primary-neon);
         }
 
         .copy-button {
@@ -151,10 +214,10 @@
             top: 0.75rem;
             right: 0.75rem;
             padding: 0.5rem 1rem;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
+            background: var(--chat-bg);
+            color: var(--primary-neon);
+            border: 1px solid var(--primary-neon);
+            border-radius: 4px;
             cursor: pointer;
             font-size: 0.875rem;
             font-weight: 500;
@@ -162,8 +225,9 @@
         }
 
         .copy-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            background: var(--primary-neon);
+            color: var(--bg-dark);
+            animation: var(--glow-animation);
         }
 
         .input-container {
@@ -171,10 +235,10 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(10px);
             padding: 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--border-neon);
         }
 
         .input-wrapper {
@@ -188,8 +252,8 @@
         #user-input {
             flex: 1;
             padding: 1rem 1.25rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
+            border: 1px solid var(--border-neon);
+            border-radius: 4px;
             background: var(--input-bg);
             color: var(--text-light);
             font-size: 1rem;
@@ -197,31 +261,33 @@
             min-height: 48px;
             max-height: 150px;
             transition: all 0.2s;
-            box-shadow: 0 4px 6px var(--shadow-color);
+            font-family: 'Inter', monospace;
         }
 
         #user-input:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            border-color: var(--primary-neon);
+            box-shadow: var(--shadow-neon);
         }
 
         .send-button {
             padding: 1rem 2rem;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 1rem;
+            background: var(--chat-bg);
+            color: var(--primary-neon);
+            border: 1px solid var(--primary-neon);
+            border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 500;
             transition: all 0.2s;
-            box-shadow: 0 4px 6px var(--shadow-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .send-button:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            background: var(--primary-neon);
+            color: var(--bg-dark);
+            animation: var(--glow-animation);
         }
 
         .send-button:disabled {
@@ -231,7 +297,7 @@
 
         .typing {
             padding: 1rem;
-            color: var(--text-gray);
+            color: var(--primary-neon);
             display: none;
             margin-left: 3.5rem;
         }
@@ -245,7 +311,7 @@
         .typing-dot {
             width: 8px;
             height: 8px;
-            background: var(--text-gray);
+            background: var(--primary-neon);
             border-radius: 50%;
             animation: typing 1.4s infinite;
             opacity: 0.4;
@@ -266,7 +332,7 @@
         }
 
         .error-message {
-            color: #ef4444;
+            color: var(--secondary-neon);
         }
 
         @media (max-width: 768px) {
@@ -294,11 +360,29 @@
                 padding: 1rem 1.5rem;
             }
         }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-neon);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-neon);
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>Trishul AI Chatbot</h1>
+        <h1>Trishul AI // T-Tech</h1>
     </header>
 
     <div class="chat-container" id="chat-container">
@@ -306,7 +390,7 @@
             <div class="avatar">AI</div>
             <div class="message-content-wrapper">
                 <div class="message-content">
-                    Hello! I'm Trishul AI. How can I assist you today?
+                    > System online... Welcome to Trishul AI. How may I assist you today?
                 </div>
             </div>
         </div>
@@ -322,7 +406,7 @@
         <div class="input-wrapper">
             <textarea 
                 id="user-input" 
-                placeholder="Type your message here..."
+                placeholder="Enter your command..."
                 rows="1"
             ></textarea>
             <button class="send-button" id="send-button">Send</button>
@@ -330,6 +414,7 @@
     </div>
 
     <script>
+        // Your existing JavaScript code remains the same
         const GEMINI_API_KEY = "AIzaSyCdoxyWjwCnQ5lEfpbXUeJP0CapL76yFyM";
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
